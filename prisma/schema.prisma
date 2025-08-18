@@ -1,0 +1,177 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  region    String   @default("US")
+  currency  String   @default("USD")
+  plan      String   @default("free")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  entities Entity[]
+
+  @@map("users")
+}
+
+model Entity {
+  id       String @id @default(cuid())
+  userId   String @map("user_id")
+  type     String // "personal" | "business"
+  name     String
+  currency String @default("USD")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accounts  Account[]
+  categories Category[]
+  budgets   Budget[]
+  envelopes Envelope[]
+  products  Product[]
+  reports   Report[]
+  advisorLogs AdvisorLog[]
+
+  @@map("entities")
+}
+
+model Account {
+  id         String    @id @default(cuid())
+  entityId   String    @map("entity_id")
+  provider   String?   // "plaid", "manual", etc.
+  mask       String?   // Last 4 digits
+  type       String    // "checking", "savings", "credit", "loan"
+  balance    Decimal   @default(0)
+  lastSyncAt DateTime? @map("last_sync_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  entity       Entity        @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@map("accounts")
+}
+
+model Transaction {
+  id           String    @id @default(cuid())
+  accountId    String    @map("account_id")
+  date         DateTime
+  amount       Decimal
+  merchant     String?
+  memo         String?
+  categoryId   String?   @map("category_id")
+  isTransfer   Boolean   @default(false) @map("is_transfer")
+  splitGroupId String?   @map("split_group_id")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  account  Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id])
+
+  @@map("transactions")
+}
+
+model Category {
+  id       String @id @default(cuid())
+  entityId String @map("entity_id")
+  name     String
+  parentId String? @map("parent_id")
+  type     String // "income" | "expense" | "transfer"
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  entity      Entity        @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  parent      Category?     @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[]    @relation("CategoryHierarchy")
+  transactions Transaction[]
+  budgets     Budget[]
+
+  @@map("categories")
+}
+
+model Budget {
+  id         String   @id @default(cuid())
+  entityId   String   @map("entity_id")
+  categoryId String   @map("category_id")
+  amount     Decimal
+  frequency  String   // "daily" | "weekly" | "monthly" | "yearly"
+  startDate  DateTime @map("start_date")
+  envelopeId String?  @map("envelope_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  entity   Entity   @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  envelope Envelope? @relation(fields: [envelopeId], references: [id])
+
+  @@map("budgets")
+}
+
+model Envelope {
+  id                   String   @id @default(cuid())
+  entityId             String   @map("entity_id")
+  name                 String
+  targetAmount         Decimal  @map("target_amount")
+  dueDate              DateTime? @map("due_date")
+  monthlyContribution  Decimal  @map("monthly_contribution")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  entity   Entity   @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  budgets  Budget[]
+
+  @@map("envelopes")
+}
+
+model Product {
+  id              String   @id @default(cuid())
+  entityId        String   @map("entity_id")
+  sku             String?
+  name            String
+  unitPrice       Decimal  @map("unit_price")
+  varCostPerUnit  Decimal  @map("var_cost_per_unit")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  entity Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@map("products")
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  entityId    String   @map("entity_id")
+  periodStart DateTime @map("period_start")
+  periodEnd   DateTime @map("period_end")
+  type        String   // "weekly" | "monthly"
+  storageUri  String?  @map("storage_uri")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  entity Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@map("reports")
+}
+
+model AdvisorLog {
+  id                String   @id @default(cuid())
+  entityId          String   @map("entity_id")
+  prompt            String
+  suggestionsJson   Json     @map("suggestions_json")
+  appliedChangesJson Json?   @map("applied_changes_json")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  entity Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@map("advisor_logs")
+}
