@@ -58,7 +58,7 @@ const mockTransactions = [
 ]
 
 export function TransactionList() {
-  const [transactions, setTransactions] = useState(mockTransactions)
+  const [transactions] = useState(mockTransactions)
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState('date')
   const [sortOrder, setSortOrder] = useState('desc')

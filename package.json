@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack --port 8080",
+    "dev:fast": "next dev --port 8080 --no-lint --no-typecheck",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

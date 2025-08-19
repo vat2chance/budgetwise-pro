@@ -85,7 +85,7 @@ export function BudgetSummary() {
         <h3 className="text-lg font-medium text-gray-900 mb-3">💡 Quick Tips</h3>
         <ul className="space-y-2 text-sm text-gray-700">
           <li>• Review your budget weekly to stay on track</li>
-          <li>• Set up alerts for when you're approaching limits</li>
+          <li>• Set up alerts for when you&apos;re approaching limits</li>
           <li>• Use envelopes for irregular expenses</li>
           <li>• Consider seasonal adjustments to your budget</li>
         </ul>

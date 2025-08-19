@@ -35,7 +35,7 @@ const mockProducts = [
 ]
 
 export function ProductList() {
-  const [products, setProducts] = useState(mockProducts)
+  const [products] = useState(mockProducts)
   const [showAddForm, setShowAddForm] = useState(false)
 
   return (

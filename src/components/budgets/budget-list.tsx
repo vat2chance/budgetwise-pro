@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { 
   PencilIcon, 
   TrashIcon,
-  PlusIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline'
@@ -59,7 +58,7 @@ const mockBudgets = [
 ]
 
 export function BudgetList() {
-  const [budgets, setBudgets] = useState(mockBudgets)
+  const [budgets] = useState(mockBudgets)
 
   const getStatusIcon = (status: string) => {
     switch (status) {

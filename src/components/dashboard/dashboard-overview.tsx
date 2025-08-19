@@ -26,58 +26,50 @@ export function DashboardOverview() {
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
+          <div className="text-center">
+            <div className="flex justify-center mb-3">
               <BanknotesIcon className="h-8 w-8 text-green-600" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total Balance</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {formatCurrency(mockData.totalBalance)}
-              </p>
-            </div>
+            <p className="text-sm font-medium text-gray-500 mb-1">Total Balance</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              {formatCurrency(mockData.totalBalance)}
+            </p>
           </div>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
+          <div className="text-center">
+            <div className="flex justify-center mb-3">
               <ArrowTrendingUpIcon className="h-8 w-8 text-blue-600" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Monthly Income</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {formatCurrency(mockData.monthlyIncome)}
-              </p>
-            </div>
+            <p className="text-sm font-medium text-gray-500 mb-1">Monthly Income</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              {formatCurrency(mockData.monthlyIncome)}
+            </p>
           </div>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
+          <div className="text-center">
+            <div className="flex justify-center mb-3">
               <ArrowTrendingUpIcon className="h-8 w-8 text-red-600 rotate-180" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Monthly Expenses</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {formatCurrency(mockData.monthlyExpenses)}
-              </p>
-            </div>
+            <p className="text-sm font-medium text-gray-500 mb-1">Monthly Expenses</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              {formatCurrency(mockData.monthlyExpenses)}
+            </p>
           </div>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
+          <div className="text-center">
+            <div className="flex justify-center mb-3">
               <CheckCircleIcon className="h-8 w-8 text-green-600" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Savings Rate</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {mockData.savingsRate}%
-              </p>
-            </div>
+            <p className="text-sm font-medium text-gray-500 mb-1">Savings Rate</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              {mockData.savingsRate}%
+            </p>
           </div>
         </div>
       </div>
@@ -97,7 +89,7 @@ export function DashboardOverview() {
             </span>
           </div>
           <div className="text-sm text-gray-500">
-            You're {mockData.budgetStatus === 'on-track' ? 'within' : 'over'} your monthly budget
+            You&apos;re {mockData.budgetStatus === 'on-track' ? 'within' : 'over'} your monthly budget
           </div>
         </div>
       </div>
