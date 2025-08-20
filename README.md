@@ -1,192 +1,260 @@
 # BudgetWise Pro
 
-A comprehensive personal and business budgeting application built with Next.js, featuring AI-powered financial insights, real-time account aggregation, and advanced reporting capabilities.
+A comprehensive financial management application built with Next.js, featuring user authentication, subscription management, budget tracking, and Stripe payment integration.
 
 ## 🚀 Features
 
 ### Core Functionality
-- **Dashboard Overview**: Real-time financial metrics and spending insights
-- **Budget Management**: Multi-frequency budgeting (daily/weekly/monthly/yearly)
-- **Transaction Tracking**: Comprehensive transaction history with categorization
-- **AI Financial Advisor**: Personalized insights and recommendations
-- **Business Analytics**: Break-even analysis and unit economics
-- **Advanced Reporting**: Exportable reports with embedded formulas
+- **User Authentication**: Secure login/signup with JWT tokens
+- **Subscription Management**: Multiple subscription tiers with Stripe integration
+- **Budget Tracking**: Create, edit, and manage budgets with real-time updates
+- **Transaction Management**: Track income and expenses
+- **Business Tools**: Product/service management
+- **Responsive Design**: Mobile-first approach with Tailwind CSS
 
-### Key Capabilities
-- **Account Aggregation**: Connect bank accounts for real-time data sync
-- **Affordability Calculator**: Track housing ratios and savings rates
-- **Catch-Up Planning**: AI-powered recovery plans for overspending
-- **Multi-Entity Support**: Personal and business finances in one platform
-- **Export Functionality**: PDF, Excel, and CSV reports with formulas
+### Subscription Plans
+- **Free Plan**: Basic budgeting features
+- **Basic Plan**: $9.99/month - Enhanced features and analytics
+- **Pro Plan**: $19.99/month - Advanced reporting and AI insights
+- **Enterprise Plan**: $49.99/month - Full feature set with priority support
+
+### Technical Features
+- **Full-Stack Application**: Next.js frontend + Node.js/Express backend
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: JWT-based with secure middleware
+- **Payment Processing**: Stripe integration for subscriptions
+- **Real-time Updates**: WebSocket support for live data
+- **API Security**: Rate limiting, CORS, and input validation
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 14, React, TypeScript
-- **Styling**: Tailwind CSS
-- **Charts**: Recharts
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: Supabase Auth
-- **Bank Integration**: Plaid (planned)
-- **AI Integration**: OpenAI (planned)
-- **Payments**: Stripe (planned)
+### Frontend
+- **Next.js 14** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first CSS framework
+- **React Context** - State management
+- **Heroicons** - Beautiful SVG icons
 
-## 📦 Installation
+### Backend
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web framework
+- **PostgreSQL** - Relational database
+- **Prisma** - Type-safe database ORM
+- **JWT** - JSON Web Token authentication
+- **Stripe** - Payment processing
+- **Redis** - Caching and sessions
+- **Docker** - Containerization
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd budgetwise-pro
-   ```
+## 📋 Prerequisites
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+- Node.js 18+ 
+- PostgreSQL 12+
+- Redis 6+
+- Stripe account
+- Docker & Docker Compose (optional)
 
-3. **Set up environment variables**
-   ```bash
-   cp env.example .env.local
-   ```
-   
-   Update `.env.local` with your configuration:
-   ```env
-   DATABASE_URL="postgresql://username:password@localhost:5432/budgetwise_pro"
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-   ```
+## 🚀 Quick Start
 
-4. **Set up the database**
-   ```bash
-   npx prisma generate
-   npx prisma db push
-   ```
+### 1. Clone the Repository
 
-5. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
-6. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-## 🏗️ Project Structure
-
-```
-src/
-├── app/                    # Next.js app router pages
-│   ├── page.tsx           # Dashboard
-│   ├── budgets/           # Budget management
-│   ├── transactions/      # Transaction history
-│   ├── business/          # Business analytics
-│   ├── reports/           # Report generation
-│   └── advisor/           # AI advisor
-├── components/            # Reusable React components
-│   ├── dashboard/         # Dashboard components
-│   ├── budgets/           # Budget components
-│   ├── transactions/      # Transaction components
-│   ├── business/          # Business components
-│   ├── reports/           # Report components
-│   └── advisor/           # Advisor components
-├── lib/                   # Utility functions and configurations
-│   ├── prisma.ts         # Database client
-│   ├── supabase.ts       # Supabase client
-│   └── utils.ts          # Utility functions
-└── types/                # TypeScript type definitions
+```bash
+git clone <repository-url>
+cd budgetwise-pro
 ```
 
-## 🎯 Key Features Implementation
+### 2. Frontend Setup
 
-### Dashboard
-- Real-time financial overview
-- Spending trends and category breakdown
-- Quick actions and AI insights
-- Upcoming bills and budget status
+```bash
+# Install dependencies
+npm install
 
-### Budget Management
-- Multi-frequency budget categories
-- Progress tracking with visual indicators
-- Envelope/sinking fund support
-- Budget vs actual comparisons
+# Create environment file
+cp env.local.example .env.local
 
-### AI Advisor
-- Natural language financial queries
-- Personalized spending recommendations
-- Lower-cost alternatives suggestions
-- Catch-up planning for overspending
+# Update environment variables
+# Edit .env.local with your configuration
 
-### Business Analytics
-- Break-even analysis with interactive charts
-- Unit economics tracking
-- Product/service margin analysis
-- Profitability forecasting
+# Start development server
+npm run dev
+```
 
-### Reports
-- Weekly and monthly financial summaries
-- Excel exports with embedded formulas
-- PDF reports with charts
-- Custom date range selection
+### 3. Backend Setup
+
+```bash
+cd backend
+
+# Using Docker (Recommended)
+docker-compose up -d
+
+# OR Manual Setup
+npm install
+cp env.example .env
+# Edit .env with your configuration
+npx prisma generate
+npx prisma db push
+npm run dev
+```
+
+### 4. Environment Configuration
+
+#### Frontend (.env.local)
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_key_here
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+#### Backend (.env)
+```bash
+PORT=5000
+DATABASE_URL="postgresql://username:password@localhost:5432/budgetwise_pro"
+JWT_SECRET=your_super_secret_key
+STRIPE_SECRET_KEY=sk_test_your_key_here
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+```
 
 ## 🔧 Development
 
-### Available Scripts
+### Frontend Commands
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run type-check` - Run TypeScript type checking
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run type-check   # Run TypeScript check
+```
 
-### Database Schema
+### Backend Commands
 
-The app uses Prisma with PostgreSQL. Key models include:
+```bash
+npm run dev          # Start development server
+npm run start        # Start production server
+npm run test         # Run tests
+npx prisma studio    # Open database GUI
+npx prisma generate  # Generate Prisma client
+npx prisma db push   # Push schema to database
+```
 
-- **Users**: User accounts and preferences
-- **Entities**: Personal and business entities
-- **Accounts**: Bank accounts and balances
-- **Transactions**: Financial transactions with categorization
-- **Budgets**: Budget categories and amounts
-- **Products**: Business products/services for unit economics
-- **Reports**: Generated report history
+### Database Management
 
-### API Routes
+```bash
+# Generate migration
+npx prisma migrate dev --name migration_name
 
-The app includes API routes for:
-- Account management and aggregation
-- Budget CRUD operations
-- Transaction processing
-- Report generation
-- AI advisor interactions
+# Reset database
+npx prisma migrate reset
+
+# Seed database
+npm run seed
+```
+
+## 📱 Usage
+
+### Authentication Flow
+
+1. **Sign Up**: Create a new account with email and password
+2. **Choose Plan**: Select from available subscription tiers
+3. **Payment**: Complete payment through Stripe checkout
+4. **Access**: Gain access to features based on your plan
+
+### Budget Management
+
+1. **Create Budget**: Set spending limits for different categories
+2. **Track Expenses**: Log transactions and categorize spending
+3. **Monitor Progress**: View real-time budget status and analytics
+4. **Adjust**: Modify budgets as needed throughout the month
+
+### Subscription Management
+
+- **Upgrade/Downgrade**: Change plans through Stripe customer portal
+- **Billing**: View invoice history and manage payment methods
+- **Cancellation**: Cancel subscription with immediate or end-of-period options
+
+## 🔒 Security Features
+
+- **JWT Authentication**: Secure token-based authentication
+- **Password Hashing**: bcrypt for secure password storage
+- **Input Validation**: Comprehensive validation using express-validator
+- **Rate Limiting**: API request throttling to prevent abuse
+- **CORS Protection**: Configured for secure cross-origin requests
+- **Secure Headers**: Helmet.js for security headers
+- **SQL Injection Protection**: Prisma ORM prevents SQL attacks
+
+## 🧪 Testing
+
+### Frontend Testing
+
+```bash
+npm run test         # Run Jest tests
+npm run test:watch   # Run tests in watch mode
+npm run test:coverage # Generate coverage report
+```
+
+### Backend Testing
+
+```bash
+npm run test         # Run all tests
+npm run test:unit    # Run unit tests only
+npm run test:integration # Run integration tests
+```
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+### Frontend Deployment
 
-1. Connect your GitHub repository to Vercel
-2. Set environment variables in Vercel dashboard
-3. Deploy automatically on push to main branch
+The frontend can be deployed to:
+- **Vercel** (recommended for Next.js)
+- **Netlify**
+- **AWS Amplify**
+- **Any static hosting service**
 
-### Other Platforms
+### Backend Deployment
 
-The app can be deployed to any platform supporting Next.js:
-- Netlify
-- Railway
-- DigitalOcean App Platform
-- AWS Amplify
+The backend can be deployed to:
+- **Railway**
+- **Render**
+- **Heroku**
+- **AWS EC2**
+- **Google Cloud Run**
 
-## 🔒 Security & Privacy
+### Environment Variables
 
-- **Data Encryption**: All sensitive data encrypted at rest and in transit
-- **Bank Integration**: Secure OAuth-style token exchange (no credentials stored)
-- **AI Privacy**: AI operates on user data only, no third-party sharing
-- **GDPR Compliance**: Data retention controls and export/delete capabilities
+Ensure all environment variables are set in your production environment:
+- Database connection strings
+- JWT secrets
+- Stripe API keys
+- CORS origins
+- Rate limiting settings
 
-## 📊 Performance
+## 📊 API Documentation
 
-- **Dashboard Load**: < 2.5s with 10k transactions
-- **Uptime**: 99.9% monthly target
-- **Scalability**: Supports 100k+ monthly active users
-- **Offline Support**: Read-only cached view with sync queue
+### Authentication Endpoints
+
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+- `GET /api/auth/verify` - Verify JWT token
+
+### Subscription Endpoints
+
+- `POST /api/subscriptions/create-checkout-session` - Create Stripe checkout
+- `POST /api/subscriptions/create-portal-session` - Access customer portal
+- `GET /api/subscriptions/current` - Get current subscription
+
+### Budget Endpoints
+
+- `GET /api/budgets` - Get user budgets
+- `POST /api/budgets` - Create budget
+- `PUT /api/budgets/:id` - Update budget
+- `DELETE /api/budgets/:id` - Delete budget
+
+### Transaction Endpoints
+
+- `GET /api/transactions` - Get user transactions
+- `POST /api/transactions` - Create transaction
+- `PUT /api/transactions/:id` - Update transaction
+- `DELETE /api/transactions/:id` - Delete transaction
 
 ## 🤝 Contributing
 
@@ -196,43 +264,46 @@ The app can be deployed to any platform supporting Next.js:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+### Development Guidelines
+
+- Follow TypeScript best practices
+- Use ESLint and Prettier for code formatting
+- Write tests for new features
+- Update documentation as needed
+- Follow conventional commit messages
+
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support
 
-For support and questions:
-- Create an issue in the GitHub repository
-- Check the documentation in the `/docs` folder
-- Review the PRD (Product Requirements Document) for detailed specifications
+If you encounter any issues:
 
-## 🗺️ Roadmap
+1. Check the [troubleshooting guide](FRONTEND_BACKEND_SETUP.md)
+2. Review the [backend setup guide](backend/setup-guide.md)
+3. Check GitHub issues for similar problems
+4. Create a new issue with detailed information
 
-### Phase 1 (MVP) - Current
-- ✅ Core dashboard and budget management
-- ✅ Transaction tracking and categorization
-- ✅ Basic reporting functionality
-- ✅ AI advisor interface
+## 🔮 Roadmap
 
-### Phase 2 (v1.1)
-- 🔄 Real bank account integration
-- 🔄 Advanced AI recommendations
-- 🔄 Excel export with formulas
-- 🔄 Envelope budgeting
+- [ ] Real-time notifications
+- [ ] Advanced analytics and reporting
+- [ ] Mobile app (React Native)
+- [ ] AI-powered financial insights
+- [ ] Multi-currency support
+- [ ] Tax reporting features
+- [ ] Investment tracking
+- [ ] Goal setting and tracking
 
-### Phase 3 (v1.2)
-- 📋 Business SKU management
-- 📋 Advanced break-even analysis
-- 📋 Multi-currency support
-- 📋 Role-based access control
+## 🙏 Acknowledgments
 
-### Phase 4 (v1.3)
-- 📋 Tax planning and set-asides
-- 📋 Debt payoff tools
-- 📋 Investment tracking
-- 📋 Mobile app development
+- [Next.js](https://nextjs.org/) for the amazing React framework
+- [Tailwind CSS](https://tailwindcss.com/) for the utility-first CSS framework
+- [Stripe](https://stripe.com/) for payment processing
+- [Prisma](https://www.prisma.io/) for the excellent ORM
+- [Heroicons](https://heroicons.com/) for the beautiful icons
 
 ---
 
-**BudgetWise Pro** - Smart personal and business budgeting for the modern world.
+**BudgetWise Pro** - Take control of your finances with confidence! 💰✨
