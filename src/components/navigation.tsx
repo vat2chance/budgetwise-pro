@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
 import {
@@ -10,7 +10,8 @@ import {
   BuildingOfficeIcon,
   UserCircleIcon,
   ArrowRightOnRectangleIcon,
-  StarIcon
+  StarIcon,
+  CogIcon
 } from '@heroicons/react/24/outline'
 import { cn } from '@/lib/utils'
 
@@ -19,6 +20,7 @@ const navigation = [
   { name: 'Budgets', href: '/budgets', icon: ChartBarIcon },
   { name: 'Transactions', href: '/transactions', icon: CreditCardIcon },
   { name: 'Business', href: '/business', icon: BuildingOfficeIcon },
+  { name: 'Admin', href: '/admin', icon: CogIcon },
 ]
 
 export function Navigation() {

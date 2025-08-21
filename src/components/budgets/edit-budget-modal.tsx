@@ -14,7 +14,7 @@ interface EditBudgetModalProps {
 
 export function EditBudgetModal({ budget, isOpen, onClose, onSave }: EditBudgetModalProps) {
   const [formData, setFormData] = useState<Partial<Budget>>({})
-  const [errors, setErrors] = useState<Partial<Budget>>({})
+  const [errors, setErrors] = useState<{ [K in keyof Budget]?: string }>({})
 
   useEffect(() => {
     if (budget) {
@@ -38,7 +38,7 @@ export function EditBudgetModal({ budget, isOpen, onClose, onSave }: EditBudgetM
   }
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<Budget> = {}
+    const newErrors: { [K in keyof Budget]?: string } = {}
     
     if (!formData.category?.trim()) {
       newErrors.category = 'Category is required'

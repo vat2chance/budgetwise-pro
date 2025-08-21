@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
+import { useRouter } from 'next/navigation'
 import { LoginForm } from '@/components/auth/login-form'
 import { SignupForm } from '@/components/auth/signup-form'
 import { SubscriptionPlans } from '@/components/subscription/subscription-plans'
@@ -13,7 +13,7 @@ export default function AuthPage() {
   const [mode, setMode] = useState<'login' | 'signup' | 'plans' | 'checkout'>('login')
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [_error, setError] = useState<string | null>(null)
   
   const { login, signup } = useAuth()
   const router = useRouter()
@@ -24,14 +24,13 @@ export default function AuthPage() {
     
     try {
       const result = await login(data)
-      
       if (result.success) {
         router.push('/')
       } else {
         setError(result.error || 'Login failed')
       }
-    } catch (error) {
-      setError('An unexpected error occurred')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed')
     } finally {
       setLoading(false)
     }
@@ -43,60 +42,49 @@ export default function AuthPage() {
     
     try {
       const result = await signup(data)
-      
       if (result.success) {
-        router.push('/')
+        setMode('plans')
       } else {
         setError(result.error || 'Signup failed')
       }
-    } catch (error) {
-      setError('An unexpected error occurred')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Signup failed')
     } finally {
       setLoading(false)
     }
   }
 
-  const handlePlanSelect = (planId: string) => {
-    setSelectedPlan(planId)
+  const handlePlanSelect = (plan: string) => {
+    setSelectedPlan(plan)
     setMode('checkout')
   }
 
   const handleCheckoutSuccess = () => {
-    // Redirect to dashboard after successful subscription
     router.push('/')
   }
 
-  const handleCheckoutCancel = () => {
+  const handleBackToPlans = () => {
     setMode('plans')
     setSelectedPlan(null)
   }
 
-  const switchToSignup = () => {
-    setMode('signup')
-    setError(null)
-  }
-
-  const switchToLogin = () => {
-    setMode('login')
-    setError(null)
-  }
-
-  const switchToPlans = () => {
-    setMode('plans')
-    setError(null)
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">BudgetWise Pro</h1>
-          <p className="text-gray-600">Take control of your finances</p>
-        </div>
+      <div className={`w-full ${mode === 'plans' ? 'max-w-7xl' : 'max-w-md'}`}>
+        {/* Header - Only show when not displaying plans */}
+        {mode !== 'plans' && (
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              BudgetWise Pro
+            </h1>
+            <p className="text-lg text-gray-600">
+              {mode === 'login' ? 'Welcome back!' : 'Create your account'}
+            </p>
+          </div>
+        )}
 
         {/* Error Display */}
-        {error && (
+        {_error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <div className="flex">
               <div className="flex-shrink-0">
@@ -105,7 +93,7 @@ export default function AuthPage() {
                 </svg>
               </div>
               <div className="ml-3">
-                <p className="text-sm text-red-800">{error}</p>
+                <p className="text-sm text-red-800">{_error}</p>
               </div>
             </div>
           </div>
@@ -113,65 +101,44 @@ export default function AuthPage() {
 
         {/* Content */}
         {mode === 'login' && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <LoginForm onSubmit={handleLogin} onSwitchToSignup={switchToSignup} loading={loading} />
-            <div className="mt-4 text-center">
-              <button
-                onClick={switchToPlans}
-                className="text-sm text-blue-600 hover:text-blue-500"
-              >
-                View subscription plans
-              </button>
-            </div>
-          </div>
-        )}
-
-        {mode === 'signup' && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <SignupForm onSubmit={handleSignup} onSwitchToLogin={switchToLogin} loading={loading} />
-            <div className="mt-4 text-center">
-              <button
-                onClick={switchToPlans}
-                className="text-sm text-blue-600 hover:text-blue-500"
-              >
-                View subscription plans
-              </button>
-            </div>
-          </div>
-        )}
-
-        {mode === 'plans' && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <SubscriptionPlans onSelectPlan={handlePlanSelect} />
-            <div className="mt-6 text-center">
-              <button
-                onClick={switchToLogin}
-                className="text-sm text-gray-600 hover:text-gray-500"
-              >
-                Already have an account? Sign in
-              </button>
-            </div>
-          </div>
-        )}
-
-        {mode === 'checkout' && selectedPlan && (
-          <StripeCheckout
-            planId={selectedPlan}
-            onSuccess={handleCheckoutSuccess}
-            onCancel={handleCheckoutCancel}
+          <LoginForm 
+            onSubmit={handleLogin} 
             loading={loading}
+            onSwitchToSignup={() => setMode('signup')}
           />
         )}
 
-        {/* Footer */}
-        <div className="text-center mt-8">
-          <p className="text-sm text-gray-500">
-            By continuing, you agree to our{' '}
-            <a href="#" className="text-blue-600 hover:text-blue-500">Terms of Service</a>
-            {' '}and{' '}
-            <a href="#" className="text-blue-600 hover:text-blue-500">Privacy Policy</a>
-          </p>
-        </div>
+        {mode === 'signup' && (
+          <SignupForm 
+            onSubmit={handleSignup} 
+            loading={loading}
+            onSwitchToLogin={() => setMode('login')}
+          />
+        )}
+
+        {mode === 'plans' && (
+          <SubscriptionPlans 
+            onSelectPlan={handlePlanSelect}
+            currentPlan={undefined}
+          />
+        )}
+
+        {mode === 'checkout' && selectedPlan && (
+          <StripeCheckout 
+            planId={selectedPlan}
+            onSuccess={handleCheckoutSuccess}
+            onCancel={handleBackToPlans}
+          />
+        )}
+
+        {/* Footer - Only show when not displaying plans */}
+        {mode !== 'plans' && (
+          <div className="text-center mt-8">
+            <p className="text-sm text-gray-500">
+              By continuing, you agree to our Terms of Service and Privacy Policy
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

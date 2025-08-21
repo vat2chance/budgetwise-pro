@@ -18,7 +18,7 @@ export function CreateBudgetButton({ onBudgetCreated }: CreateBudgetButtonProps)
     startDate: new Date().toISOString().split('T')[0],
     notes: ''
   })
-  const [errors, setErrors] = useState<Partial<BudgetFormData>>({})
+  const [errors, setErrors] = useState<{ [K in keyof BudgetFormData]?: string }>({})
 
   const handleInputChange = (field: keyof BudgetFormData, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -29,7 +29,7 @@ export function CreateBudgetButton({ onBudgetCreated }: CreateBudgetButtonProps)
   }
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<BudgetFormData> = {}
+    const newErrors: { [K in keyof BudgetFormData]?: string } = {}
     
     if (!formData.category.trim()) {
       newErrors.category = 'Category is required'

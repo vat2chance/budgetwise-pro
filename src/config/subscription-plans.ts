@@ -17,7 +17,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
   {
     id: 'basic',
     name: 'Basic',
-    price: 9.99,
+    price: 9.9,
     interval: 'month',
     features: [
       'Unlimited budget categories',
@@ -31,7 +31,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
   {
     id: 'pro',
     name: 'Pro',
-    price: 19.99,
+    price: 19.9,
     interval: 'month',
     features: [
       'Everything in Basic',
@@ -39,7 +39,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
       'Bank account integration',
       'Custom categories',
       'Advanced forecasting',
-      'Team collaboration (up to 3)'
+      'Team collaboration (up to 3 members)'
     ],
     stripePriceId: 'price_pro_monthly',
     popular: true
@@ -67,7 +67,7 @@ export const yearlyPlans: SubscriptionPlan[] = subscriptionPlans.map(plan => ({
   id: `${plan.id}-yearly`,
   price: plan.price * 10, // 2 months free with yearly
   interval: 'year',
-  stripePriceId: plan.stripePriceId.replace('monthly', 'yearly')
+  stripePriceId: plan.stripePriceId ? plan.stripePriceId.replace('monthly', 'yearly') : undefined
 }))
 
 export const getPlanById = (id: string): SubscriptionPlan | undefined => {

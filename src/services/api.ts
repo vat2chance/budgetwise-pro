@@ -1,3 +1,6 @@
+import { BudgetFormData } from '@/types/budget'
+import { User } from '@/types/auth'
+
 // API service for backend communication
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'
 
@@ -22,14 +25,14 @@ class ApiService {
   }
 
   // Mock data for testing
-  private getMockUser() {
+  private getMockUser(): User {
     return {
       id: '1',
       email: 'demo@budgetwise.com',
       name: 'Demo User',
       subscription: {
         id: 'sub_123',
-        status: 'active',
+        status: 'active' as const,
         planId: 'pro',
         planName: 'Pro Plan',
         currentPeriodStart: new Date().toISOString(),
@@ -42,7 +45,7 @@ class ApiService {
   }
 
   // Authentication endpoints
-  async login(email: string, password: string) {
+  async login(email: string, password: string): Promise<{ user: User; token: string }> {
     if (MOCK_MODE) {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000))
@@ -62,7 +65,7 @@ class ApiService {
     return this.handleResponse(response)
   }
 
-  async register(name: string, email: string, password: string) {
+  async register(name: string, email: string, password: string): Promise<{ user: User; token: string }> {
     if (MOCK_MODE) {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000))
@@ -82,7 +85,7 @@ class ApiService {
     return this.handleResponse(response)
   }
 
-  async verifyToken() {
+  async verifyToken(): Promise<{ user: User; token: string }> {
     if (MOCK_MODE) {
       // Mock token verification
       const user = this.getMockUser()
@@ -95,7 +98,7 @@ class ApiService {
     return this.handleResponse(response)
   }
 
-  async logout() {
+  async logout(): Promise<{ success: boolean }> {
     if (MOCK_MODE) {
       // Mock logout
       return { success: true }
@@ -114,37 +117,28 @@ class ApiService {
     planName: string
     planPrice: number
     planInterval: string
-  }) {
-    if (MOCK_MODE) {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Mock checkout session
-      return { sessionId: 'mock_session_' + Date.now() }
-    }
-
-    const response = await fetch(`${API_BASE_URL}/subscriptions/create-checkout-session`, {
+  }): Promise<{ id: string; url: string; demoMode?: boolean }> {
+    // Use Next.js API route for Stripe integration
+    const response = await fetch('/api/stripe/create-checkout-session', {
       method: 'POST',
-      headers: this.getAuthHeaders(),
-      body: JSON.stringify(planData)
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ plan: planData.planId })
     })
-    return this.handleResponse(response)
+    
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: 'Network error' }))
+      throw new Error(error.error || `HTTP error! status: ${response.status}`)
+    }
+    
+    return response.json()
   }
 
-  async createPortalSession() {
-    if (MOCK_MODE) {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Mock portal session
-      return { url: 'https://mock-stripe-portal.com' }
-    }
-
-    const response = await fetch(`${API_BASE_URL}/subscriptions/create-portal-session`, {
-      method: 'POST',
-      headers: this.getAuthHeaders()
-    })
-    return this.handleResponse(response)
+  async createPortalSession(): Promise<{ url: string }> {
+    // For demo purposes, return a mock portal URL
+    // In production, you'd use the Next.js API route with actual customer ID
+    return { url: 'https://billing.stripe.com/session/test_demo' }
   }
 
   async getCurrentSubscription() {
@@ -189,7 +183,7 @@ class ApiService {
     return this.handleResponse(response)
   }
 
-  async createBudget(budgetData: any) {
+  async createBudget(budgetData: BudgetFormData) {
     if (MOCK_MODE) {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000))
@@ -206,7 +200,7 @@ class ApiService {
     return this.handleResponse(response)
   }
 
-  async updateBudget(id: string, budgetData: any) {
+  async updateBudget(id: string, budgetData: Partial<BudgetFormData>) {
     if (MOCK_MODE) {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000))
@@ -261,7 +255,7 @@ class ApiService {
     return this.handleResponse(response)
   }
 
-  async createTransaction(transactionData: any) {
+  async createTransaction(transactionData: { amount: number; type: string; description: string; date: string; categoryId: string }) {
     if (MOCK_MODE) {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000))
@@ -291,7 +285,7 @@ class ApiService {
     return this.handleResponse(response)
   }
 
-  async updateUserProfile(profileData: any) {
+  async updateUserProfile(profileData: { name?: string; email?: string }) {
     if (MOCK_MODE) {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000))

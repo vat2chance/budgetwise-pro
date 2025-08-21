@@ -21,6 +21,7 @@ export interface SubscriptionPlan {
   price: number
   interval: 'month' | 'year'
   features: string[]
+  stripePriceId?: string
   popular?: boolean
   current?: boolean
 }

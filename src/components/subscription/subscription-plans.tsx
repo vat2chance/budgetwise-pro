@@ -17,8 +17,12 @@ export function SubscriptionPlans({ onSelectPlan, currentPlan, loading = false }
 
   return (
     <div className="w-full max-w-6xl mx-auto">
-      {/* Toggle */}
-      <div className="text-center mb-8">
+      {/* Header */}
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">Take control of your finances</h1>
+        <p className="text-xl text-gray-600 mb-8">Choose the perfect plan for your budgeting needs</p>
+        
+        {/* Toggle */}
         <div className="flex items-center justify-center space-x-4">
           <span className={`text-sm ${!isYearly ? 'text-gray-900' : 'text-gray-500'}`}>
             Monthly
@@ -55,12 +59,12 @@ export function SubscriptionPlans({ onSelectPlan, currentPlan, loading = false }
           return (
             <div
               key={plan.id}
-              className={`relative rounded-lg border-2 p-6 ${
+              className={`relative rounded-xl border-2 p-6 shadow-sm hover:shadow-md transition-shadow min-h-[500px] flex flex-col ${
                 isPopular
-                  ? 'border-blue-500 bg-blue-50'
+                  ? 'border-blue-500 bg-blue-50 shadow-blue-100'
                   : isCurrentPlan
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-gray-200 bg-white'
+                  ? 'border-green-500 bg-green-50 shadow-green-100'
+                  : 'border-gray-200 bg-white hover:border-gray-300'
               }`}
             >
               {/* Popular Badge */}
@@ -84,28 +88,28 @@ export function SubscriptionPlans({ onSelectPlan, currentPlan, loading = false }
 
               {/* Plan Header */}
               <div className="text-center mb-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{plan.name}</h3>
-                <div className="mb-4">
-                  <span className="text-4xl font-bold text-gray-900">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                <div className="mb-3">
+                  <span className="text-3xl font-bold text-gray-900">
                     {plan.price === 0 ? 'Free' : formatCurrency(plan.price)}
                   </span>
                   {plan.price > 0 && (
-                    <span className="text-gray-500">/{plan.interval}</span>
+                    <span className="text-sm text-gray-500">/{plan.interval}</span>
                   )}
                 </div>
                 {plan.price > 0 && isYearly && (
-                  <p className="text-sm text-green-600 font-medium">
+                  <p className="text-xs text-green-600 font-medium px-1">
                     Save ${((plan.price / 12) * 2).toFixed(2)} per month
                   </p>
                 )}
               </div>
 
               {/* Features */}
-              <div className="space-y-3 mb-6">
+              <div className="space-y-3 mb-6 flex-grow">
                 {plan.features.map((feature, index) => (
                   <div key={index} className="flex items-start">
-                    <CheckIcon className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm text-gray-700">{feature}</span>
+                    <CheckIcon className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -114,19 +118,19 @@ export function SubscriptionPlans({ onSelectPlan, currentPlan, loading = false }
               <button
                 onClick={() => onSelectPlan(plan.id)}
                 disabled={loading || isCurrentPlan}
-                className={`w-full py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                className={`w-full py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-200 ${
                   isCurrentPlan
                     ? 'bg-green-100 text-green-700 cursor-not-allowed'
                     : isPopular
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                    ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200 hover:shadow-md'
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 {isCurrentPlan
                   ? 'Current Plan'
                   : plan.price === 0
                   ? 'Get Started'
-                  : `Subscribe Now`}
+                  : 'Subscribe Now'}
               </button>
 
               {/* Free Plan Note */}
@@ -141,13 +145,13 @@ export function SubscriptionPlans({ onSelectPlan, currentPlan, loading = false }
       </div>
 
       {/* Additional Info */}
-      <div className="text-center mt-8">
-        <p className="text-sm text-gray-600">
+      <div className="text-center mt-12">
+        <p className="text-lg text-gray-600 mb-4">
           All plans include a 14-day free trial. Cancel anytime.
         </p>
-        <p className="text-xs text-gray-500 mt-2">
+        <p className="text-sm text-gray-500">
           Need a custom plan?{' '}
-          <a href="#" className="text-blue-600 hover:text-blue-500">
+          <a href="#" className="text-blue-600 hover:text-blue-500 font-medium">
             Contact our sales team
           </a>
         </p>

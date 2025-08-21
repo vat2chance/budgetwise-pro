@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { loadStripe } from '@stripe/stripe-js'
+import { loadStripe, Stripe } from '@stripe/stripe-js'
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { getPlanById } from '@/config/subscription-plans'
 import { formatCurrency } from '@/lib/utils'
@@ -45,15 +45,26 @@ export function StripeCheckout({ planId, onSuccess, onCancel, loading = false }:
         planInterval: plan.interval
       })
 
-      if (result.sessionId) {
-        // Redirect to Stripe Checkout
-        if (stripe) {
-          const { error: stripeError } = await stripe.redirectToCheckout({
-            sessionId: result.sessionId
-          })
+      if (result.id) {
+        // Check if this is demo mode
+        if (result.demoMode || result.id.startsWith('cs_demo_')) {
+          // Demo mode - simulate successful checkout
+          alert(`Demo Mode: Checkout session created!\n\nSession ID: ${result.id}\n\nIn production, you would be redirected to Stripe Checkout.`)
+          
+          // Simulate success after a delay
+          setTimeout(() => {
+            onSuccess()
+          }, 1000)
+        } else {
+          // Real Stripe checkout
+          if (stripe) {
+            const { error: stripeError } = await stripe.redirectToCheckout({
+              sessionId: result.id
+            })
 
-          if (stripeError) {
-            setError(stripeError.message || 'Checkout failed')
+            if (stripeError) {
+              setError(stripeError.message || 'Checkout failed')
+            }
           }
         }
       } else {
@@ -106,7 +117,7 @@ export function StripeCheckout({ planId, onSuccess, onCancel, loading = false }:
       <div className="text-center mb-6">
         <CheckIcon className="w-12 h-12 text-green-500 mx-auto mb-4" />
         <h3 className="text-xl font-semibold text-gray-900 mb-2">Complete Your Order</h3>
-        <p className="text-gray-600">You're about to subscribe to the {plan.name} plan</p>
+        <p className="text-gray-600">You&apos;re about to subscribe to the {plan.name} plan</p>
       </div>
 
       {/* Order Summary */}
@@ -130,7 +141,7 @@ export function StripeCheckout({ planId, onSuccess, onCancel, loading = false }:
 
       {/* Features */}
       <div className="mb-6">
-        <h4 className="font-medium text-gray-900 mb-3">What's Included:</h4>
+        <h4 className="font-medium text-gray-900 mb-3">What&apos;s Included:</h4>
         <ul className="space-y-2">
           {plan.features.map((feature, index) => (
             <li key={index} className="flex items-center text-sm text-gray-600">
