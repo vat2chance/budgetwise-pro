@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BudgetWise Pro Icon Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .icon-preview {
+            display: inline-block;
+            margin: 20px;
+            text-align: center;
+        }
+        .icon-preview img {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .download-btn {
+            background: #3B82F6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .download-btn:hover {
+            background: #2563EB;
+        }
+        .instructions {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .logo-display {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .logo-display svg {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍎 BudgetWise Pro iOS Icon Generator</h1>
+        
+        <div class="instructions">
+            <h3>📱 How to Use This Tool:</h3>
+            <ol>
+                <li><strong>Right-click</strong> on each icon below</li>
+                <li>Select <strong>"Save image as..."</strong></li>
+                <li>Save with the exact filename shown</li>
+                <li>Replace the placeholder files in your <code>public/</code> folder</li>
+            </ol>
+        </div>
+
+        <div class="logo-display">
+            <h3>Your Current Logo:</h3>
+            <svg width="100" height="100" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background with vignette effect -->
+                <defs>
+                    <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.5">
+                        <stop offset="0%" stop-color="#111827"/>
+                        <stop offset="50%" stop-color="#374151"/>
+                        <stop offset="100%" stop-color="#111827"/>
+                    </radialGradient>
+                </defs>
+                
+                <!-- Background -->
+                <rect width="32" height="32" rx="6" fill="url(#vignette)"/>
+                
+                <!-- Glowing green rounded square -->
+                <rect x="2" y="2" width="28" height="28" rx="4" fill="#4ADE80" filter="drop-shadow(0 0 8px #4ADE80)"/>
+                
+                <!-- Dollar sign -->
+                <text x="16" y="20" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#1F2937">$</text>
+                
+                <!-- Upward arrow intersecting with dollar sign -->
+                <path d="M8 24 L16 8 L24 24" stroke="#1F2937" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+        </div>
+
+        <h2>📱 Required iOS Icons</h2>
+        
+        <div class="icon-preview">
+            <h3>Apple Touch Icon (180x180)</h3>
+            <canvas id="apple-touch-icon" width="180" height="180"></canvas>
+            <br>
+            <button class="download-btn" onclick="downloadIcon('apple-touch-icon', 'apple-touch-icon.png')">Download apple-touch-icon.png</button>
+        </div>
+
+        <div class="icon-preview">
+            <h3>App Icon (192x192)</h3>
+            <canvas id="icon-192" width="192" height="192"></canvas>
+            <br>
+            <button class="download-btn" onclick="downloadIcon('icon-192', 'icon-192x192.png')">Download icon-192x192.png</button>
+        </div>
+
+        <div class="icon-preview">
+            <h3>App Icon (512x512)</h3>
+            <canvas id="icon-512" width="512" height="512"></canvas>
+            <br>
+            <button class="download-btn" onclick="downloadIcon('icon-512', 'icon-512x512.png')">Download icon-512x512.png</button>
+        </div>
+
+        <div class="instructions">
+            <h3>🚀 After Downloading:</h3>
+            <ol>
+                <li>Replace the placeholder files in your <code>public/</code> folder</li>
+                <li>Commit and push the changes</li>
+                <li>Redeploy to Vercel</li>
+                <li>Your iOS app will have proper icons!</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Generate icons on page load
+        window.onload = function() {
+            generateIcon('apple-touch-icon', 180);
+            generateIcon('icon-192', 192);
+            generateIcon('icon-512', 512);
+        };
+
+        function generateIcon(canvasId, size) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = size;
+            canvas.height = size;
+            
+            // Create background
+            const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+            gradient.addColorStop(0, '#111827');
+            gradient.addColorStop(0.5, '#374151');
+            gradient.addColorStop(1, '#111827');
+            
+            // Draw background
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Draw rounded rectangle background
+            const padding = size * 0.06;
+            const rectSize = size - (padding * 2);
+            const radius = size * 0.12;
+            
+            ctx.fillStyle = '#4ADE80';
+            ctx.shadowColor = '#4ADE80';
+            ctx.shadowBlur = size * 0.25;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            
+            roundRect(ctx, padding, padding, rectSize, rectSize, radius);
+            ctx.fill();
+            
+            // Reset shadow
+            ctx.shadowColor = 'transparent';
+            
+            // Draw dollar sign
+            ctx.fillStyle = '#1F2937';
+            ctx.font = `bold ${size * 0.56}px Arial, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('$', size/2, size/2 + size * 0.12);
+            
+            // Draw arrow
+            ctx.strokeStyle = '#1F2937';
+            ctx.lineWidth = size * 0.09;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            const arrowStart = size * 0.25;
+            const arrowTop = size * 0.25;
+            const arrowEnd = size * 0.75;
+            const arrowBottom = size * 0.75;
+            
+            ctx.beginPath();
+            ctx.moveTo(arrowStart, arrowBottom);
+            ctx.lineTo(size/2, arrowTop);
+            ctx.lineTo(arrowEnd, arrowBottom);
+            ctx.stroke();
+        }
+
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        function downloadIcon(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>

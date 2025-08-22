@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BudgetWise Pro Screenshot Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .screenshot-preview {
+            display: inline-block;
+            margin: 20px;
+            text-align: center;
+        }
+        .screenshot-preview canvas {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .download-btn {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .download-btn:hover {
+            background: #059669;
+        }
+        .instructions {
+            background: #f0fdf4;
+            border: 1px solid #22c55e;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .mockup {
+            background: #1F2937;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .mockup-header {
+            background: #374151;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mockup-content {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 200px;
+        }
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: white;
+            margin-bottom: 10px;
+        }
+        .battery {
+            width: 20px;
+            height: 10px;
+            border: 1px solid white;
+            border-radius: 2px;
+            position: relative;
+        }
+        .battery::after {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: 3px;
+            width: 2px;
+            height: 4px;
+            background: white;
+            border-radius: 0 1px 1px 0;
+        }
+        .battery-level {
+            height: 100%;
+            width: 70%;
+            background: #22c55e;
+            border-radius: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 BudgetWise Pro Screenshot Generator</h1>
+        
+        <div class="instructions">
+            <h3>📸 How to Use This Tool:</h3>
+            <ol>
+                <li><strong>Right-click</strong> on each screenshot below</li>
+                <li>Select <strong>"Save image as..."</strong></li>
+                <li>Save with the exact filename shown</li>
+                <li>Replace the placeholder files in your <code>public/</code> folder</li>
+            </ol>
+        </div>
+
+        <h2>📱 Required Screenshots</h2>
+        
+        <div class="screenshot-preview">
+            <h3>Mobile Screenshot (750x1334)</h3>
+            <canvas id="mobile-screenshot" width="750" height="1334"></canvas>
+            <br>
+            <button class="download-btn" onclick="downloadScreenshot('mobile-screenshot', 'screenshot-narrow.png')">Download screenshot-narrow.png</button>
+        </div>
+
+        <div class="screenshot-preview">
+            <h3>Desktop Screenshot (1280x720)</h3>
+            <canvas id="desktop-screenshot" width="1280" height="720"></canvas>
+            <br>
+            <button class="download-btn" onclick="downloadScreenshot('desktop-screenshot', 'screenshot-wide.png')">Download screenshot-wide.png</button>
+        </div>
+
+        <div class="instructions">
+            <h3>🚀 After Downloading:</h3>
+            <ol>
+                <li>Replace the placeholder files in your <code>public/</code> folder</li>
+                <li>Commit and push the changes</li>
+                <li>Redeploy to Vercel</li>
+                <li>Your iOS app will have proper screenshots!</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Generate screenshots on page load
+        window.onload = function() {
+            generateMobileScreenshot();
+            generateDesktopScreenshot();
+        };
+
+        function generateMobileScreenshot() {
+            const canvas = document.getElementById('mobile-screenshot');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = 750;
+            canvas.height = 1334;
+            
+            // Background
+            ctx.fillStyle = '#F3F4F6';
+            ctx.fillRect(0, 0, 750, 1334);
+            
+            // Status bar
+            ctx.fillStyle = '#1F2937';
+            ctx.fillRect(0, 0, 750, 44);
+            
+            // Status bar content
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('9:41', 375, 28);
+            
+            // Battery indicator
+            ctx.fillStyle = 'white';
+            ctx.fillRect(700, 20, 30, 15);
+            ctx.fillStyle = '#22c55e';
+            ctx.fillRect(702, 22, 26, 11);
+            
+            // Navigation bar
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 44, 750, 60);
+            ctx.fillStyle = '#1F2937';
+            ctx.font = 'bold 20px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('BudgetWise Pro', 375, 80);
+            
+            // Dashboard content
+            ctx.fillStyle = 'white';
+            ctx.fillRect(20, 120, 710, 200);
+            ctx.fillRect(20, 340, 710, 200);
+            ctx.fillRect(20, 560, 710, 200);
+            
+            // Content placeholders
+            ctx.fillStyle = '#6B7280';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('📊 Financial Overview', 40, 150);
+            ctx.fillText('💰 Total Budget: $5,000', 40, 180);
+            ctx.fillText('💸 Spent: $2,300', 40, 210);
+            ctx.fillText('✅ Remaining: $2,700', 40, 240);
+            
+            ctx.fillText('📈 Recent Transactions', 40, 370);
+            ctx.fillText('☕ Starbucks - $4.50', 40, 400);
+            ctx.fillText('⛽ Shell - $45.20', 40, 430);
+            ctx.fillText('🛒 Walmart - $89.45', 40, 460);
+            
+            ctx.fillText('🎯 Quick Actions', 40, 590);
+            ctx.fillText('➕ Create Budget', 40, 620);
+            ctx.fillText('🏦 Connect Bank', 40, 650);
+            ctx.fillText('📊 View Reports', 40, 680);
+            
+            // Bottom navigation
+            ctx.fillStyle = '#1F2937';
+            ctx.fillRect(0, 1274, 750, 60);
+            ctx.fillStyle = 'white';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('🏠', 125, 1300);
+            ctx.fillText('📊', 250, 1300);
+            ctx.fillText('💳', 375, 1300);
+            ctx.fillText('🏢', 500, 1300);
+            ctx.fillText('⚙️', 625, 1300);
+        }
+
+        function generateDesktopScreenshot() {
+            const canvas = document.getElementById('desktop-screenshot');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = 1280;
+            canvas.height = 720;
+            
+            // Background
+            ctx.fillStyle = '#F3F4F6';
+            ctx.fillRect(0, 0, 1280, 720);
+            
+            // Header
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, 1280, 80);
+            ctx.fillStyle = '#1F2937';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('BudgetWise Pro - Smart Financial Management', 640, 50);
+            
+            // Sidebar
+            ctx.fillStyle = '#1F2937';
+            ctx.fillRect(0, 80, 250, 640);
+            
+            // Sidebar menu items
+            ctx.fillStyle = 'white';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('🏠 Dashboard', 30, 120);
+            ctx.fillText('📊 Budgets', 30, 160);
+            ctx.fillText('💳 Transactions', 30, 200);
+            ctx.fillText('🏢 Business', 30, 240);
+            ctx.fillText('📈 Reports', 30, 280);
+            ctx.fillText('🤖 AI Advisor', 30, 320);
+            ctx.fillText('⚙️ Settings', 30, 360);
+            
+            // Main content area
+            ctx.fillStyle = 'white';
+            ctx.fillRect(270, 100, 990, 600);
+            
+            // Dashboard widgets
+            ctx.fillStyle = '#E5E7EB';
+            ctx.fillRect(290, 120, 470, 150);
+            ctx.fillRect(780, 120, 470, 150);
+            ctx.fillRect(290, 290, 470, 150);
+            ctx.fillRect(780, 290, 470, 150);
+            ctx.fillRect(290, 460, 470, 150);
+            ctx.fillRect(780, 460, 470, 150);
+            
+            // Widget content
+            ctx.fillStyle = '#374151';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'left';
+            
+            ctx.fillText('💰 Total Budget', 310, 150);
+            ctx.fillText('$15,000', 310, 180);
+            ctx.fillText('📊 Monthly Overview', 800, 150);
+            ctx.fillText('Income: $8,500', 800, 180);
+            
+            ctx.fillText('💸 Expenses', 310, 320);
+            ctx.fillText('$6,200', 310, 350);
+            ctx.fillText('📈 Savings Rate', 800, 320);
+            ctx.fillText('27%', 800, 350);
+            
+            ctx.fillText('🎯 Goals', 310, 490);
+            ctx.fillText('Emergency Fund', 310, 520);
+            ctx.fillText('📊 Analytics', 800, 490);
+            ctx.fillText('Trending Up', 800, 520);
+        }
+
+        function downloadScreenshot(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>
