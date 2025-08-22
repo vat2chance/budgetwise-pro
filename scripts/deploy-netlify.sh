@@ -27,3 +27,5 @@ netlify deploy --prod --dir=.next
 echo "✅ Netlify deployment complete!"
 echo "🌐 Your app should be live at: https://your-app.netlify.app"
 echo "📊 Check status with: netlify status"
+
+

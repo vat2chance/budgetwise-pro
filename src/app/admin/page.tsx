@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/auth-context'
 import { useRouter } from 'next/navigation'
+import { ProtectedRoute } from '@/components/auth/protected-route'
 import { 
   UsersIcon, 
   CreditCardIcon, 
@@ -54,10 +55,13 @@ export default function AdminPage() {
       return
     }
     
-    // For demo purposes, allow any authenticated user to access admin
-    // In production, you'd check user.role === 'admin'
-    if (user.email !== 'admin@budgetwise.pro') {
+    // Check if user has admin access
+    // In production, you'd check user.role === 'admin' from database
+    if (user.email !== 'Vat2chance@gmail.com') {
       console.warn('Non-admin user accessing admin panel')
+      // For now, redirect non-admin users
+      router.push('/')
+      return
     }
     
     loadAdminData()
@@ -178,8 +182,9 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
@@ -355,6 +360,7 @@ export default function AdminPage() {
           </div>
         </div>
       </div>
+      </div>
 
       {/* User Detail Modal */}
       {showUserModal && selectedUser && (
@@ -407,6 +413,6 @@ export default function AdminPage() {
           </div>
         </div>
       )}
-    </div>
+    </ProtectedRoute>
   )
 }

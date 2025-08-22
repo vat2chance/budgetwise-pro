@@ -160,3 +160,5 @@ Your BudgetWise Pro app is now ready to be deployed to any platform you choose. 
 - ✅ Deployment scripts
 
 **Choose your platform and deploy!** 🚀
+
+

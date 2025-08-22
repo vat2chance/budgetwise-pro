@@ -1,0 +1,22 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with vignette effect -->
+  <defs>
+    <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="50%" stop-color="#374151"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="url(#vignette)"/>
+  
+  <!-- Glowing green rounded square -->
+  <rect x="2" y="2" width="28" height="28" rx="4" fill="#4ADE80" filter="drop-shadow(0 0 8px #4ADE80)"/>
+  
+  <!-- Dollar sign -->
+  <text x="16" y="20" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#1F2937">$</text>
+  
+  <!-- Upward arrow intersecting with dollar sign -->
+  <path d="M8 24 L16 8 L24 24" stroke="#1F2937" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

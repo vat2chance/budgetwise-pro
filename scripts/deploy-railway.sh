@@ -29,3 +29,5 @@ railway up
 echo "✅ Railway deployment complete!"
 echo "🌐 Your app should be live at: https://your-app.railway.app"
 echo "📊 Check status with: railway status"
+
+

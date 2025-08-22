@@ -96,128 +96,117 @@ export function TransactionList() {
     }
   }
 
+  const getSortIcon = (field: string) => {
+    if (sortBy !== field) return null
+    return sortOrder === 'asc' ? (
+      <ArrowUpIcon className="h-4 w-4" />
+    ) : (
+      <ArrowDownIcon className="h-4 w-4" />
+    )
+  }
+
   return (
-    <div className="bg-white rounded-lg shadow">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium text-gray-900">Transaction History</h2>
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search transactions..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-            <button className="p-2 text-gray-400 hover:text-gray-600">
-              <FunnelIcon className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
+      <div>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Recent Transactions</h2>
+        <p className="text-sm sm:text-base text-gray-600">
+          Track your spending and income across all accounts
+        </p>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('date')}
+      {/* Search and Filters */}
+      <div className="bg-white rounded-lg shadow-sm sm:shadow p-4 sm:p-6">
+        <div className="space-y-4">
+          {/* Search Bar */}
+          <div className="relative">
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search transactions..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            />
+          </div>
+
+          {/* Sort Options */}
+          <div className="flex flex-wrap gap-2">
+            {[
+              { key: 'date', label: 'Date' },
+              { key: 'amount', label: 'Amount' },
+              { key: 'merchant', label: 'Merchant' }
+            ].map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => handleSort(key)}
+                className={`flex items-center space-x-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors touch-manipulation ${
+                  sortBy === key
+                    ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
+                }`}
               >
-                <div className="flex items-center">
-                  Date
-                  {sortBy === 'date' && (
-                    sortOrder === 'asc' ? <ArrowUpIcon className="h-3 w-3 ml-1" /> : <ArrowDownIcon className="h-3 w-3 ml-1" />
-                  )}
-                </div>
-              </th>
-              <th 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('merchant')}
-              >
-                <div className="flex items-center">
-                  Merchant
-                  {sortBy === 'merchant' && (
-                    sortOrder === 'asc' ? <ArrowUpIcon className="h-3 w-3 ml-1" /> : <ArrowDownIcon className="h-3 w-3 ml-1" />
-                  )}
-                </div>
-              </th>
-              <th 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('amount')}
-              >
-                <div className="flex items-center">
-                  Amount
-                  {sortBy === 'amount' && (
-                    sortOrder === 'asc' ? <ArrowUpIcon className="h-3 w-3 ml-1" /> : <ArrowDownIcon className="h-3 w-3 ml-1" />
-                  )}
-                </div>
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Category
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Account
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Memo
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {sortedTransactions.map((transaction) => (
-              <tr key={transaction.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatDate(transaction.date)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{transaction.merchant}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`text-sm font-medium ${
-                    transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {transaction.amount > 0 ? '+' : ''}{formatCurrency(transaction.amount)}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                    {transaction.category}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {transaction.account}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {transaction.memo}
-                </td>
-              </tr>
+                <span>{label}</span>
+                {getSortIcon(key)}
+              </button>
             ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination */}
-      <div className="px-6 py-3 border-t border-gray-200">
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-700">
-            Showing <span className="font-medium">1</span> to <span className="font-medium">{sortedTransactions.length}</span> of{' '}
-            <span className="font-medium">{sortedTransactions.length}</span> results
-          </div>
-          <div className="flex space-x-2">
-            <button className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50">
-              Previous
-            </button>
-            <button className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50">
-              Next
-            </button>
           </div>
         </div>
+      </div>
+
+      {/* Transactions List */}
+      <div className="bg-white rounded-lg shadow-sm sm:shadow overflow-hidden">
+        <div className="divide-y divide-gray-200">
+          {sortedTransactions.map((transaction) => (
+            <div
+              key={transaction.id}
+              className="p-4 sm:p-6 hover:bg-gray-50 transition-colors"
+            >
+              <div className="flex items-start justify-between">
+                {/* Transaction Details */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <h3 className="text-base sm:text-lg font-medium text-gray-900 truncate">
+                      {transaction.merchant}
+                    </h3>
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                      {transaction.category}
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-1 text-sm text-gray-600">
+                    <p className="truncate">{transaction.memo}</p>
+                    <p className="text-xs text-gray-500">
+                      {formatDate(transaction.date)} • {transaction.account}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Amount */}
+                <div className="ml-4 text-right">
+                  <p className={`text-lg sm:text-xl font-semibold ${
+                    transaction.amount >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {transaction.amount >= 0 ? '+' : ''}{formatCurrency(Math.abs(transaction.amount))}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Empty State */}
+        {sortedTransactions.length === 0 && (
+          <div className="p-8 text-center">
+            <div className="mx-auto h-12 w-12 text-gray-400 mb-4">
+              <MagnifyingGlassIcon className="h-12 w-12" />
+            </div>
+            <h3 className="text-sm font-medium text-gray-900 mb-2">No transactions found</h3>
+            <p className="text-sm text-gray-500">
+              {searchTerm ? 'Try adjusting your search terms.' : 'Start by adding some transactions.'}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

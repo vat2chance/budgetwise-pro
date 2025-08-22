@@ -9,6 +9,16 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "BudgetWise Pro - Smart Personal & Business Budgeting",
   description: "Connect your accounts, track expenses, and get AI-powered insights to improve your financial health.",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes",
+  themeColor: "#3B82F6",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "BudgetWise Pro",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({
@@ -18,6 +28,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="BudgetWise Pro" />
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body className={inter.className}>
         <AuthProvider>
           <div className="min-h-screen bg-gray-50">

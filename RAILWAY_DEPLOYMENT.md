@@ -150,3 +150,5 @@ Your BudgetWise Pro app is now live on Railway and ready to accept real subscrip
 - **Railway Docs**: https://docs.railway.app
 - **Railway Discord**: https://discord.gg/railway
 - **GitHub Issues**: Your repository issues
+
+

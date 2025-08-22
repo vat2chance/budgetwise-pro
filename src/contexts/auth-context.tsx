@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { User, LoginFormData, SignupFormData, AuthContextType } from '@/types/auth'
-import { supabase } from '@/lib/supabase'
+import { getSupabaseClient } from '@/lib/supabase'
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
@@ -12,31 +12,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Check for existing session on mount
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        loadUserProfile(session.user)
-      }
-      setLoading(false)
-    })
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+    const initializeAuth = async () => {
+      try {
+        const supabase = getSupabaseClient()
+        
+        // Get initial session
+        const { data: { session } } = await supabase.auth.getSession()
         if (session?.user) {
           await loadUserProfile(session.user)
-        } else {
-          setUser(null)
         }
         setLoading(false)
-      }
-    )
 
-    return () => subscription.unsubscribe()
+        // Listen for auth changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          async (event, session) => {
+            if (session?.user) {
+              await loadUserProfile(session.user)
+            } else {
+              setUser(null)
+            }
+            setLoading(false)
+          }
+        )
+
+        return () => subscription.unsubscribe()
+      } catch (error) {
+        console.error('Auth initialization error:', error)
+        setLoading(false)
+      }
+    }
+
+    initializeAuth()
   }, [])
 
   const loadUserProfile = async (authUser: { id: string; email: string; user_metadata?: { name?: string } }) => {
     try {
+      const supabase = getSupabaseClient()
+      
       // Try to get user profile from our users table
       // If the table doesn't exist yet, we'll use default values
       let profileData = null
@@ -69,6 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           planName: 'Free Plan',
           currentPeriodStart: new Date().toISOString(),
           currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          cancelAtPeriodEnd: false
         }
       }
       
@@ -83,6 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (data: LoginFormData): Promise<{ success: boolean; error?: string }> => {
     try {
       setLoading(true)
+      const supabase = getSupabaseClient()
       
       const { data: authData, error } = await supabase.auth.signInWithPassword({
         email: data.email,
@@ -147,6 +161,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signup = async (data: SignupFormData): Promise<{ success: boolean; error?: string }> => {
     try {
       setLoading(true)
+      const supabase = getSupabaseClient()
       
       // Create user in Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -215,6 +230,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
+      const supabase = getSupabaseClient()
       await supabase.auth.signOut()
     } catch (error) {
       console.error('Logout error:', error)
@@ -226,6 +242,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const updateSubscription = async (planId: string): Promise<{ success: boolean; error?: string }> => {
     try {
       setLoading(true)
+      const supabase = getSupabaseClient()
       
       // For now, we'll just refresh the user to get updated subscription status
       // In a real app, you might call a specific endpoint to update subscription
@@ -241,6 +258,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshUser = async () => {
     try {
+      const supabase = getSupabaseClient()
       const { data: { user: authUser } } = await supabase.auth.getUser()
       if (authUser) {
         await loadUserProfile(authUser)
