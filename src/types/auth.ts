@@ -2,6 +2,7 @@ export interface User {
   id: string
   email: string
   name: string
+  avatarUrl?: string
   subscription?: {
     id: string
     status: 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete' | 'incomplete_expired' | 'unpaid'
@@ -11,8 +12,8 @@ export interface User {
     currentPeriodEnd: string
     cancelAtPeriodEnd: boolean
   }
-  createdAt: string
-  updatedAt: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface SubscriptionPlan {

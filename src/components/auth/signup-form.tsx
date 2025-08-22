@@ -69,7 +69,7 @@ export function SignupForm({ onSubmit, onSwitchToLogin, loading = false }: Signu
       await onSubmit(formData)
     } catch (error) {
       // Handle error if needed
-      console.error('Signup error:', error)
+      // Error is handled by the parent component
     }
   }
 

@@ -12,6 +12,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Check for existing session on mount
   useEffect(() => {
+    let authSubscription: { unsubscribe: () => void } | null = null
+    
     const initializeAuth = async () => {
       try {
         const supabase = getSupabaseClient()
@@ -35,7 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         )
 
-        return () => subscription.unsubscribe()
+        authSubscription = subscription
       } catch (error) {
         console.error('Auth initialization error:', error)
         setLoading(false)
@@ -43,9 +45,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     initializeAuth()
+    
+    return () => {
+      if (authSubscription) {
+        authSubscription.unsubscribe()
+      }
+    }
   }, [])
 
-  const loadUserProfile = async (authUser: { id: string; email: string; user_metadata?: { name?: string } }) => {
+  const loadUserProfile = async (authUser: { id: string; email?: string; user_metadata?: { name?: string } }) => {
     try {
       const supabase = getSupabaseClient()
       
@@ -71,9 +79,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Create user object
       const userData: User = {
         id: authUser.id,
-        email: authUser.email!,
+        email: authUser.email || 'unknown@example.com',
         name: profileData?.name || authUser.user_metadata?.name || 'User',
-        avatarUrl: profileData?.avatar_url,
         subscription: {
           id: 'free',
           status: 'active',
@@ -132,8 +139,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           id: authData.user.id,
           email: authData.user.email!,
           name: profileData?.name || authData.user.user_metadata?.name || 'User',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
           subscription: {
             id: 'free',
             status: 'active',
@@ -204,7 +209,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           id: authData.user.id,
           email: data.email,
           name: data.name,
-          avatarUrl: null,
           subscription: {
             id: 'free',
             status: 'active',
@@ -212,6 +216,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             planName: 'Free Plan',
             currentPeriodStart: new Date().toISOString(),
             currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            cancelAtPeriodEnd: false
           }
         }
         

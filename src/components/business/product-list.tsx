@@ -4,6 +4,16 @@ import { useState } from 'react'
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { formatCurrency } from '@/lib/utils'
 
+interface Product {
+  id: string
+  name: string
+  sku: string
+  unitPrice: number
+  varCostPerUnit: number
+  margin: number
+  unitsSold: number
+}
+
 // This would typically come from an API or database
 // For now, we'll use empty data that can be easily replaced
 const useProducts = () => {
@@ -11,7 +21,7 @@ const useProducts = () => {
   // const { data, loading, error } = useQuery(['products'], fetchProducts)
   
   return {
-    products: [], // Will be populated from real data
+    products: [] as Product[], // Will be populated from real data
     loading: false,
     error: null
   }

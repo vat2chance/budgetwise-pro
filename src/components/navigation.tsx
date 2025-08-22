@@ -18,7 +18,14 @@ import {
 } from '@heroicons/react/24/outline'
 import { cn } from '@/lib/utils'
 
-const allNavigation = [
+interface NavigationItem {
+  name: string
+  href: string
+  icon: React.ComponentType<{ className?: string }>
+  adminOnly?: boolean
+}
+
+const allNavigation: NavigationItem[] = [
   { name: 'Dashboard', href: '/', icon: HomeIcon },
   { name: 'Budgets', href: '/budgets', icon: ChartBarIcon },
   { name: 'Transactions', href: '/transactions', icon: CreditCardIcon },

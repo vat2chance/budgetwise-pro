@@ -9,8 +9,6 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "BudgetWise Pro - Smart Personal & Business Budgeting",
   description: "Connect your accounts, track expenses, and get AI-powered insights to improve your financial health.",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes",
-  themeColor: "#3B82F6",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -19,6 +17,14 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: "#3B82F6",
 };
 
 export default function RootLayout({
