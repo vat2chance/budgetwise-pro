@@ -30,6 +30,7 @@ const allNavigation: NavigationItem[] = [
   { name: 'Budgets', href: '/budgets', icon: ChartBarIcon },
   { name: 'Transactions', href: '/transactions', icon: CreditCardIcon },
   { name: 'Business', href: '/business', icon: BuildingOfficeIcon },
+  { name: 'Account', href: '/account', icon: UserCircleIcon },
   { name: 'Admin', href: '/admin', icon: CogIcon, adminOnly: true },
 ]
 
