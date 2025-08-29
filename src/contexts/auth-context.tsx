@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { User, LoginFormData, SignupFormData, AuthContextType } from '@/types/auth'
-import { getSupabaseClient } from '@/lib/supabase'
+import { getSupabaseClient, DEMO_MODE } from '@/lib/supabase'
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
@@ -16,6 +16,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     const initializeAuth = async () => {
       try {
+        if (DEMO_MODE) {
+          // In demo mode, just set loading to false
+          setLoading(false)
+          return
+        }
+
         const supabase = getSupabaseClient()
         
         // Get initial session
@@ -55,6 +61,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const loadUserProfile = async (authUser: { id: string; email?: string; user_metadata?: { name?: string } }) => {
     try {
+      if (DEMO_MODE) {
+        // In demo mode, create a mock user
+        const userData: User = {
+          id: authUser.id,
+          email: authUser.email || 'demo@example.com',
+          name: authUser.user_metadata?.name || 'Demo User',
+          subscription: {
+            id: 'free',
+            status: 'active',
+            planId: 'free',
+            planName: 'Free Plan',
+            currentPeriodStart: new Date().toISOString(),
+            currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            cancelAtPeriodEnd: false
+          }
+        }
+        setUser(userData)
+        return { success: true }
+      }
+
       const supabase = getSupabaseClient()
       
       // Try to get user profile from our users table
@@ -103,42 +129,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (data: LoginFormData): Promise<{ success: boolean; error?: string }> => {
     try {
       setLoading(true)
-      const supabase = getSupabaseClient()
       
-      const { data: authData, error } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-      })
-      
-      if (error) {
-        throw error
-      }
-      
-      if (authData.user) {
-        // Try to get user profile from our users table
-        // If the table doesn't exist yet, we'll use default values
-        let profileData = null
-        try {
-          const { data: profile, error: profileError } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', authData.user.id)
-            .single()
-          
-          if (profileError && profileError.code !== 'PGRST116') {
-            console.warn('Profile load failed (table may not exist yet):', profileError)
-          } else {
-            profileData = profile
-          }
-        } catch (profileError) {
-          console.warn('Profile load failed (table may not exist yet):', profileError)
-        }
-        
-        // Create user object
+      if (DEMO_MODE) {
+        // In demo mode, create a mock user
         const userData: User = {
-          id: authData.user.id,
-          email: authData.user.email!,
-          name: profileData?.name || authData.user.user_metadata?.name || 'User',
+          id: 'demo-user-id',
+          email: data.email,
+          name: 'Demo User',
           subscription: {
             id: 'free',
             status: 'active',
@@ -146,14 +143,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             planName: 'Free Plan',
             currentPeriodStart: new Date().toISOString(),
             currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            cancelAtPeriodEnd: false,
+            cancelAtPeriodEnd: false
           }
         }
-        
         setUser(userData)
         return { success: true }
       }
-      
+
+      const supabase = getSupabaseClient()
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password
+      })
+
+      if (error) {
+        return { success: false, error: error.message }
+      }
+
+      if (authData.user) {
+        await loadUserProfile(authData.user)
+        return { success: true }
+      }
+
       return { success: false, error: 'Login failed' }
     } catch (error) {
       console.error('Login error:', error)
@@ -166,45 +177,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signup = async (data: SignupFormData): Promise<{ success: boolean; error?: string }> => {
     try {
       setLoading(true)
-      const supabase = getSupabaseClient()
       
-      // Create user in Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      if (DEMO_MODE) {
+        // In demo mode, create a mock user
+        const userData: User = {
+          id: 'demo-user-id',
+          email: data.email,
+          name: data.name,
+          subscription: {
+            id: 'free',
+            status: 'active',
+            planId: 'free',
+            planName: 'Free Plan',
+            currentPeriodStart: new Date().toISOString(),
+            currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            cancelAtPeriodEnd: false
+          }
+        }
+        setUser(userData)
+        return { success: true }
+      }
+
+      const supabase = getSupabaseClient()
+      const { data: authData, error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
           data: {
-            name: data.name,
+            name: data.name
           }
         }
       })
-      
-      if (authError) {
-        throw authError
+
+      if (error) {
+        return { success: false, error: error.message }
       }
-      
+
       if (authData.user) {
-        // Try to create user profile in our users table
-        // If the table doesn't exist yet, we'll handle it gracefully
-        try {
-          const { error: profileError } = await supabase
-            .from('users')
-            .insert({
-              id: authData.user.id,
-              email: data.email,
-              name: data.name,
-            })
-          
-          if (profileError) {
-            console.warn('Profile creation failed (table may not exist yet):', profileError)
-            // Continue anyway - the user is still created in auth
-          }
-        } catch (profileError) {
-          console.warn('Profile creation failed (table may not exist yet):', profileError)
-          // Continue anyway - the user is still created in auth
-        }
-        
-        // Create user object
         const userData: User = {
           id: authData.user.id,
           email: data.email,
@@ -235,8 +244,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      const supabase = getSupabaseClient()
-      await supabase.auth.signOut()
+      if (!DEMO_MODE) {
+        const supabase = getSupabaseClient()
+        await supabase.auth.signOut()
+      }
     } catch (error) {
       console.error('Logout error:', error)
     } finally {
@@ -247,6 +258,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const updateSubscription = async (planId: string): Promise<{ success: boolean; error?: string }> => {
     try {
       setLoading(true)
+      
+      if (DEMO_MODE) {
+        // In demo mode, just return success
+        return { success: true }
+      }
+      
       const supabase = getSupabaseClient()
       
       // For now, we'll just refresh the user to get updated subscription status
@@ -263,6 +280,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshUser = async () => {
     try {
+      if (DEMO_MODE) {
+        return
+      }
+      
       const supabase = getSupabaseClient()
       const { data: { user: authUser } } = await supabase.auth.getUser()
       if (authUser) {

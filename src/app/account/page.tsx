@@ -67,6 +67,16 @@ export default function AccountPage() {
     }
   }
 
+  // Safe access to user properties with defaults
+  const userName = user?.name || 'User'
+  const userEmail = user?.email || 'No email'
+  const subscription = user?.subscription
+  const subscriptionStatus = subscription?.status || 'inactive'
+  const planName = subscription?.planName || 'Free Plan'
+  const currentPeriodEnd = subscription?.currentPeriodEnd
+  const subscriptionId = subscription?.id || 'free'
+  const createdAt = user?.createdAt
+
   return (
     <ProtectedRoute>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -110,7 +120,7 @@ export default function AccountPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   ) : (
-                    <p className="text-gray-900">{user?.name}</p>
+                    <p className="text-gray-900">{userName}</p>
                   )}
                 </div>
 
@@ -126,7 +136,7 @@ export default function AccountPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   ) : (
-                    <p className="text-gray-900">{user?.email}</p>
+                    <p className="text-gray-900">{userEmail}</p>
                   )}
                 </div>
 
@@ -170,15 +180,15 @@ export default function AccountPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Current Plan
                   </label>
-                  <p className="text-gray-900">{user?.subscription?.planName || 'Free Plan'}</p>
+                  <p className="text-gray-900">{planName}</p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Status
                   </label>
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getSubscriptionStatusColor(user?.subscription?.status || 'inactive')}`}>
-                    {getSubscriptionStatusText(user?.subscription?.status || 'inactive')}
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getSubscriptionStatusColor(subscriptionStatus)}`}>
+                    {getSubscriptionStatusText(subscriptionStatus)}
                   </span>
                 </div>
 
@@ -187,8 +197,8 @@ export default function AccountPage() {
                     Next Billing Date
                   </label>
                   <p className="text-gray-900">
-                    {user?.subscription?.currentPeriodEnd 
-                      ? new Date(user.subscription.currentPeriodEnd).toLocaleDateString()
+                    {currentPeriodEnd 
+                      ? new Date(currentPeriodEnd).toLocaleDateString()
                       : 'N/A'
                     }
                   </p>
@@ -198,7 +208,7 @@ export default function AccountPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Plan ID
                   </label>
-                  <p className="text-gray-900 font-mono text-sm">{user?.subscription?.id || 'free'}</p>
+                  <p className="text-gray-900 font-mono text-sm">{subscriptionId}</p>
                 </div>
               </div>
             </div>
@@ -277,8 +287,8 @@ export default function AccountPage() {
                   <CalendarIcon className="w-4 h-4 mr-2 text-gray-400" />
                   <span className="text-gray-600">Member since:</span>
                   <span className="ml-auto text-gray-900">
-                    {user?.createdAt 
-                      ? new Date(user.createdAt).toLocaleDateString()
+                    {createdAt 
+                      ? new Date(createdAt).toLocaleDateString()
                       : 'Recently'
                     }
                   </span>
@@ -294,7 +304,7 @@ export default function AccountPage() {
                   <KeyIcon className="w-4 h-4 mr-2 text-gray-400" />
                   <span className="text-gray-600">Account type:</span>
                   <span className="ml-auto text-gray-900">
-                    {user?.email === 'Vat2chance@gmail.com' ? 'Admin' : 'User'}
+                    {userEmail === 'Vat2chance@gmail.com' ? 'Admin' : 'User'}
                   </span>
                 </div>
               </div>
@@ -349,3 +359,4 @@ export default function AccountPage() {
     </ProtectedRoute>
   )
 }
+

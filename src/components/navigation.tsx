@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
-import { Logo } from '@/components/ui/logo'
 import {
   HomeIcon,
   ChartBarIcon,
@@ -121,9 +120,8 @@ export function Navigation() {
           {/* Logo and Navigation */}
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <Logo className="w-8 h-8" />
-              <span className="ml-2 text-lg sm:text-xl font-bold text-gray-900 hidden sm:block">BudgetWise Pro</span>
-              <span className="ml-2 text-lg font-bold text-gray-900 sm:hidden">BW Pro</span>
+              <span className="text-lg sm:text-xl font-bold text-gray-900 hidden sm:block">BudgetWise Pro</span>
+              <span className="text-lg font-bold text-gray-900 sm:hidden">BW Pro</span>
             </div>
             
             {/* Desktop Navigation */}

@@ -195,3 +195,6 @@ If you need help with any of these deployment options:
 ---
 
 **🎯 Recommendation: Start with PWA (it's ready now!), then consider Capacitor for a hybrid approach if you want App Store distribution.**
+
+
+
